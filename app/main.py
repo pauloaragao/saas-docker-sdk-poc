@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 
 from app.api.routes import health
+from app.api.routes import docker_sdk
 from app.api.openapi_config import get_openapi_tags, swagger_ui_parameters
 from config.settings import settings
 
@@ -56,6 +57,7 @@ app.add_middleware(
 
 # Routes
 app.include_router(health.router, prefix="/api/v1", tags=["health"])
+app.include_router(docker_sdk.router, prefix="/api", tags=["docker-sdk"])
 
 
 @app.get("/", tags=["root"])

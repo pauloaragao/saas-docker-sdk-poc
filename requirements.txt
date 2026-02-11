@@ -6,3 +6,8 @@ python-dotenv==1.0.0
 pytest==7.4.4
 pytest-asyncio==0.23.2
 httpx==0.25.2
+docker==7.0.0
+colorama==0.4.6
+flask==3.0.0
+flask-cors==4.0.0
+flask-restx==0.6.0

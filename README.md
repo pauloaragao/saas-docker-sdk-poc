@@ -1,164 +1,252 @@
 # SaaS Docker SDK PoC
 
-API de exemplo construída com FastAPI e Docker.
+SDK completo para gerenciar containers Docker com Python. Inclui API FastAPI, API Flask, CLI Python e biblioteca SDK.
 
-## Estrutura do Projeto
+## 🎯 Features
+
+- ✅ **SDK Python** - Biblioteca para build e gerencimento de containers
+- ✅ **API FastAPI** - API assíncrona com Swagger
+- ✅ **API Flask** - API síncrona para criar/gerenciar containers
+- ✅ **CLI** - Interface de linha de comando
+- ✅ **Logging com Cores** - Saída formatada
+- ✅ **Exemplos** - 4 exemplos práticos de uso
+
+## 📁 Estrutura do Projeto
 
 ```
 saas-docker-sdk-poc/
-├── app/                          # Aplicação principal
-│   ├── __init__.py
-│   ├── main.py                  # Entry point da aplicação
-│   └── api/                     # APIs da aplicação
-│       ├── routes/              # Rotas da API
-│       │   ├── __init__.py
-│       │   └── health.py       # Health check routes
-│       └── schemas/             # Pydantic schemas/models
-│           └── __init__.py
+├── app/                              # Aplicação FastAPI
+│   ├── main.py                       # App FastAPI
+│   ├── api/                          # APIs FastAPI
+│   │   ├── routes/
+│   │   └── schemas/
+│   └── sdk_api/                      # 🆕 API Flask para SDK
+│       ├── app.py                    # App Flask factory
+│       ├── routes.py                 # Endpoints da API
+│       └── schemas.py                # Schemas Pydantic
 │
-├── config/                       # Configurações
-│   ├── __init__.py
-│   └── settings.py              # Settings da aplicação
+├── sdk/                              # 🐳 SDK Docker
+│   ├── core/
+│   │   └── client.py                 # Cliente Docker
+│   ├── builders/
+│   │   └── container_builder.py      # Build de imagens
+│   ├── managers/
+│   │   └── container_manager.py      # Gerenciamento de containers
+│   ├── utils/
+│   │   ├── logger.py                 # Logging com cores
+│   │   └── helpers.py                # Funções auxiliares
+│   └── cli.py                        # CLI do SDK
 │
-├── tests/                        # Testes
-│   ├── __init__.py
-│   └── unit/                    # Unit tests
-│       └── __init__.py
+├── examples/                         # 📚 Exemplos
+│   ├── 01_basic_usage.py
+│   ├── 02_build_and_run.py
+│   ├── 03_container_management.py
+│   └── 04_flask_sdk_api.py           # 🆕 Exemplo Flask API
 │
-├── Dockerfile                    # Configuração Docker
-├── docker-compose.yml           # Orquestração de containers
-├── requirements.txt             # Dependências Python
-├── .dockerignore                # Arquivos ignorados no build Docker
-├── .env.example                 # Exemplo de variáveis de ambiente
-└── README.md                    # Este arquivo
+├── config/                           # Configurações
+├── tests/                            # Testes
+├── Dockerfile                        # Imagem Docker
+├── docker-compose.yml                # Orquestração
+├── requirements.txt                  # Dependências
+├── flask_run.py                      # 🆕 Entry point Flask
+├── Makefile                          # Automação
+├── SDK.md                            # Documentação SDK
+├── FLASK_API.md                      # 🆕 Documentação Flask API
+└── README.md                         # Este arquivo
 ```
 
-## Pré-requisitos
+## 🚀 Quick Start
 
-- Docker >= 20.10
-- Docker Compose >= 2.0
-
-## Instalação
-
-### 1. Clonar o repositório
-
+### 1. Instalar Dependências
 ```bash
-git clone <repository-url>
-cd saas-docker-sdk-poc
-```
-
-### 2. Configurar variáveis de ambiente
-
-```bash
-cp .env.example .env
-```
-
-## Execução
-
-### Com Docker Compose (Recomendado)
-
-```bash
-# Iniciar os containers
-docker-compose up -d
-
-# Parar os containers
-docker-compose down
-
-# Visualizar logs
-docker-compose logs -f api
-```
-
-### Sem Docker
-
-```bash
-# Criar ambiente virtual
-python -m venv venv
-source venv/bin/activate  # No Windows: venv\Scripts\activate
-
-# Instalar dependências
+make install
+# ou
 pip install -r requirements.txt
-
-# Executar aplicação
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## Documentação da API
+### 2. Escolha uma opção:
 
-Após iniciar a aplicação, ela estará disponível em `http://localhost:8000`
-
-### Swagger UI (Documentação Interativa)
-- URL: `http://localhost:8000/docs`
-- Permite testar os endpoints diretamente
-- Exibe schemas de request/response
-- Suporte a autenticação
-
-### ReDoc (Documentação Alternativa)
-- URL: `http://localhost:8000/redoc`
-- Documentação em formato limpo
-- Melhor para leitura em mobile
-
-### OpenAPI Schema
-- URL: `http://localhost:8000/openapi.json`
-- Arquivo JSON com toda a especificação OpenAPI 3.0
-
-## Endpoints
-
-## Testes
-
+#### Opção A: FastAPI (porta 8000)
 ```bash
-# Executar testes
-pytest
-
-# Com coverage
-pytest --cov=app tests/
+make run
+# ou
+docker-compose up -d
 ```
 
-## Desenvolvimento
-
-### Adicionar novas rotas
-
-1. Criar arquivo em `app/api/routes/`
-2. Importar o router em `app/main.py`
-3. Adicionar com `app.include_router()`
-
-### Adicionar novos schemas
-
-1. Criar modelos Pydantic em `app/api/schemas/`
-2. Usar nos request/response models das rotas
-
-### Variáveis de ambiente
-
-Configurar in `.env`:
-- `ENVIRONMENT` - Ambiente (development/production)
-- `DEBUG` - Mode debug
-- `HOST` - Host da aplicação
-- `PORT` - Porta da aplicação
-- `REDIS_URL` - URL do Redis
-
-## Build para produção
-
+#### Opção B: Flask SDK API (porta 5000)
 ```bash
-# Build da imagem Docker
-docker build -t saas-api:latest .
+make flask-run
+# ou
+python flask_run.py
+```
+
+#### Opção C: SDK Python (via código/CLI)
+```bash
+# CLI
+python -m sdk.cli list --all
+
+# Python
+python examples/01_basic_usage.py
+```
+
+## 🌐 APIs Disponíveis
+
+### FastAPI (porta 8000) - Recomendado ⭐
+- **Swagger Docs**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **Health Check**: `GET /api/v1/health`
+- **Containers**: `/api/containers`, `/api/containers/{id}`, etc
+- **Imagens**: `/api/images`, etc
+
+### Flask SDK API (porta 5000)  
+- **Health**: http://localhost:5000/health
+- **Containers**: `/api/containers`, `/api/containers/{id}`, etc
+- **Imagens**: `/api/images`, etc
+
+## 📚 Documentação
+
+- [SDK.md](./SDK.md) - Documentação completa SDK Python
+- [FLASK_API.md](./FLASK_API.md) - Documentação API Flask
+- [ESTRUTURA.md](./ESTRUTURA.md) - Estrutura FastAPI original
+- [DOCKER_SDK_STRUCTURE.md](./DOCKER_SDK_STRUCTURE.md) - Arquitetura SDK
+
+## 🐳 Usando a API Flask
+
+### Iniciar
+```bash
+make flask-run
+# A API estará em http://localhost:5000
+```
+
+### Exemplos cURL
+
+**Build de imagem:**
+```bash
+curl -X POST http://localhost:5000/api/images \
+  -H "Content-Type: application/json" \
+  -d '{
+    "dockerfile_path": "./Dockerfile",
+    "tag": "myapp:latest",
+    "context_path": "."
+  }'
+```
+
+**Executar container:**
+```bash
+curl -X POST http://localhost:5000/api/containers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "image": "myapp:latest",
+    "name": "myapp-container",
+    "ports": {8000: 8000},
+    "environment": {"DEBUG": "True"}
+  }'
+```
+
+**Listar containers:**
+```bash
+curl http://localhost:5000/api/containers
+```
+
+**Obter logs:**
+```bash
+curl http://localhost:5000/api/containers/myapp-container/logs
+```
+
+**Parar container:**
+```bash
+curl -X POST http://localhost:5000/api/containers/myapp-container/stop
+```
+
+**Remover container:**
+```bash
+curl -X DELETE http://localhost:5000/api/containers/myapp-container?force=true
+```
+
+### Testar API Flask
+```bash
+make flask-test
+# ou
+python examples/04_flask_sdk_api.py
+```
+
+## 🐍 Usando o SDK Python
+
+### Uso Programático
+
+```python
+from sdk import DockerClient, ContainerBuilder, ContainerManager
+
+# Conectar ao Docker
+client = DockerClient()
+
+# Build de imagem
+builder = ContainerBuilder(client)
+image_id = builder.build_image(
+    dockerfile_path="./Dockerfile",
+    tag="myapp:latest"
+)
 
 # Executar container
-docker run -p 8000:8000 saas-api:latest
+manager = ContainerManager(client)
+container_id = manager.run(
+    image="myapp:latest",
+    name="myapp",
+    ports={8000: 8000}
+)
+
+# Listar logs
+logs = manager.get_logs(container_id)
+print(logs)
 ```
 
-## Estrutura de Camadas
+### Via CLI
 
+```bash
+# Build
+python -m sdk.cli build --dockerfile ./Dockerfile --tag myapp:latest
+
+# Run
+python -m sdk.cli run myapp:latest --name myapp -p 8000:8000
+
+# Listar containers
+python -m sdk.cli list --all
+
+# Logs
+python -m sdk.cli logs myapp --lines 50
+
+# Parar
+python -m sdk.cli stop myapp
+
+# Remover
+python -m sdk.cli remove myapp --force
 ```
-requests
-  ↓
-routes (app/api/routes/)
-  ↓
-schemas (app/api/schemas/)
-  ↓
-config (config/)
-  ↓
-responses
+
+## 🛠️ Comandos Make
+
+```bash
+make help          # Ver todos os comandos
+
+# Docker Compose
+make install       # Instalar dependências
+make run           # Iniciar containers
+make stop          # Parar containers
+make clean         # Remover containers e volumes
+make logs          # Ver logs
+
+# SDK Python
+make sdk-list      # Listar containers via SDK
+make sdk-build     # Build via SDK
+make sdk-run       # Run via SDK
+
+# Flask API
+make flask-run     # Rodar API Flask
+make flask-test    # Testar API Flask
+
+# Testes
+make test          # Rodar testes Python
 ```
 
-## Licença
+## 🔧 Configuração
 
-MIT
+### Variáveis de Ambiente (.env)
