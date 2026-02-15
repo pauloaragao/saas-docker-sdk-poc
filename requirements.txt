@@ -1,13 +1,36 @@
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-pydantic==2.5.3
+# FastAPI and related packages
+fastapi==0.108.0
+uvicorn[standard]==0.25.0
+pydantic==2.5.2
 pydantic-settings==2.1.0
-python-dotenv==1.0.0
-pytest==7.4.4
-pytest-asyncio==0.23.2
-httpx==0.25.2
-docker==7.0.0
-colorama==0.4.6
+
+# Flask for additional API
 flask==3.0.0
 flask-cors==4.0.0
-flask-restx==0.6.0
+
+# Docker SDK for container management
+docker==6.1.3
+
+# Redis for caching/queuing
+redis==5.0.1
+
+# HTTP client and tools
+httpx==0.26.0
+requests==2.31.0
+
+# System monitoring
+psutil==5.9.6
+
+# Utilities
+colorama==0.4.6
+python-multipart==0.0.6
+
+# Development dependencies
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.12.1
+flake8==6.1.0
+isort==5.13.2
+
+# Documentation
+pydantic[email]==2.5.2
