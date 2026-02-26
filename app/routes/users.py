@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.application.services.docker_service import DockerService
+from app.services.docker_service import DockerService
 from app.dependencies import get_docker_service
 
 router = APIRouter(tags=["health"])
