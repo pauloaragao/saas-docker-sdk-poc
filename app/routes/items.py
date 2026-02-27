@@ -1,7 +1,7 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 from app.services.docker_service import DockerService
 from app.dependencies import get_docker_service
@@ -16,8 +16,21 @@ router = APIRouter(prefix="/api/v1/containers", tags=["containers"])
 
 
 class CreateContainerRequest(BaseModel):
-	image: str
+	image: str = Field(
+		...,
+		min_length=2,
+		description="Imagem Docker com tag opcional (ex.: nginx:alpine ou redis:7)",
+		examples=["nginx:alpine"],
+	)
 	name: str | None = None
+
+	@field_validator("image")
+	@classmethod
+	def validate_image(cls, value: str) -> str:
+		clean_value = value.strip()
+		if clean_value.lower() == "string":
+			raise ValueError("Informe uma imagem Docker válida, por exemplo: nginx:alpine")
+		return clean_value
 
 
 @router.get("", response_model=list[dict[str, Any]])
